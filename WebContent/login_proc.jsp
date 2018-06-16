@@ -1,43 +1,62 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%
+    	// 원래는 DB정보의 user 테이블에서 id/pw 를 받아서 비교
+    	// 그러나 우리는 임시로 우리가 만들어요.
+    	String dbId = "aaa";    // 임시 ID
+    	String dbPw = "1111";   // 임시 PW
+    	// 넘어오는 userid 와 userpw를 받아서 로그인 처리
+    	String userid = request.getParameter("id");
+    	String userpw = request.getParameter("pswd");
+    	
+    %>
 <!DOCTYPE html>
 <html>
-<%
-	// 임시 ID 패스워드
-	String tmpID = "korea";
-	String tmpPW = "1234";
-	
-	String site = "controller.jsp?mode=login";
-	// 아이디 패스워드가 넘어 오는데 받아 줘야 되죠?
-	// 한글 처리를 위해 UTF-8
-	request.setCharacterEncoding("utf-8");
-	String id = request.getParameter("id");
-	String pswd = request.getParameter("pswd");
-	
-	// 사용자의 입력값ID, PW를 받아서 내가 정한 ID 패스 워드와 비교
-	// 맞으면 메인으로 틀리면 틀렸다고 알림 주고 로그인 페이지로
-	// 실제 서비스는 DB에 있는 ID, PW를 가져 와서 비교
-	if (tmpID.equals(id) && tmpPW.equals(pswd)) {
-		// 메인으로
-		site = "controller.jsp?mode=main";
-		// 로그인 유지도 시키고 ID값을 넘기기 위해서
-		// 세션에 ID를 저장
-		session.setAttribute("id", id);
-		response.sendRedirect(site);
-	} else {
-		// 로그인 페이지로
-%>
-	<script>
-		alert("아이디 패스워드를 확인 하세요.");
-		location.href="controller.jsp?mode=login";
-	</script>
-<%
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<title>Insert title here</title>
+<script>
+	function login_page(){
+		alert("로그인 페이지로 이동 합니다.");
+		location.href = "controller.jsp?mode=login";
 	}
-	
-	// 페이지 이동
-// 	RequestDispatcher dis = request.getRequestDispatcher(site);
-// 	dis.forward(request, response);
-	
-%>
-</html>	
-
+	function main_page(){
+		alert("반갑습니다. 고갱님. 메인으로 갈께요.");
+		location.href = "controller.jsp?mode=main";
+	}
+</script>
+</head>
+<body>
+<div class="container">
+로그인이 되게 해주세요.<br>
+제 아이디는 <%=userid %> 이고요<br>
+제 패스워드는 <%=userpw %> 이에요.<br>
+아이디 패스워드가 맞는지 틀렸는지 알려주세요<br>
+<%
+	// 만약에 설정된 임시 ID와 PW 가 맞다면 맞아요!!
+	// 틀리면 틀려요!! 똑바로 입력 하세요를 출력
+	// if 문을 작성해서 만들어 봅시다!!
+	if (dbId.equals(userid) && dbPw.equals(userpw)) {
+		session.setAttribute("id", userid);	
+	%>
+	    <div class="alert alert-success">
+        <strong>로그인 성공!</strong>아이디와 패스워드가 맞아요!
+  		</div>
+  		<script> setTimeout("main_page()", 2000); </script>
+	<% } else { %>
+	    <div class="alert alert-danger">
+        <strong>로그인 실패!</strong>알려줘도 틀리냐!
+  		</div>
+  		<script> setTimeout("login_page()", 2000);	
+  				//location.href="controller.jsp?mode=login";
+  		</script>
+  		
+	<% } %>
+</div>
+</body>
+</html>
